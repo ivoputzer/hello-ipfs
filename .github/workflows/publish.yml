@@ -1,0 +1,53 @@
+name: Publish
+on:
+  push:
+    branches: [master]
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        ref: refs/heads/master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '14'
+    - name: Run Build
+      run: |
+        mkdir -p dist
+        cat readme.md | npx marked -o dist/index.html
+    - name: Save Build
+      uses: actions/upload-artifact@v2
+      with:
+        name: build@${{ github.sha }}
+        path: dist
+
+  Pages:
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+    - name: Load Build
+      uses: actions/download-artifact@v2
+      with:
+        name: build@${{ github.sha }}
+    - uses: actions/setup-node@master
+      with:
+        node-version: '14'
+        check-latest: true
+    - name: Run Publish
+      run: |
+        npx gh-pages@${GH_PAGES_VERSION} \
+          --repo https://git:${GH_PAGES_TOKEN}@github.com/${GH_PAGES_SLUG}.git \
+          --user "${GH_PAGES_ACTOR} <${GH_PAGES_ACTOR}@users.noreply.github.com>" \
+          --message "${GH_PAGES_MESSAGE}" \
+          --branch ${GH_PAGES_BRANCH} \
+          --dist ${PWD} \
+          --silent
+      env:
+        GH_PAGES_VERSION: "3.0.0"
+        GH_PAGES_BRANCH: gh-pages
+        GH_PAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_PAGES_SLUG: ${{ github.repository }}
+        GH_PAGES_ACTOR: ${{ github.actor }}
+        GH_PAGES_MESSAGE: "Pages built for commit ${{ github.repository }}@${{ github.sha }}\n\n${{ github.event.head_commit.message }}"
+        NODE_DEBUG: gh-pages
