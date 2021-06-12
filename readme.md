@@ -1,13 +1,10 @@
 hello ipfs
 ===
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ivoputzer/hello-ipfs/Publish?label=%F0%9F%93%9D%20Published&style=for-the-badge)
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](https://spdx.org/licenses/MIT) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ivoputzer/hello-ipfs/Publish?logo=github&label=Build&style=for-the-badge) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ivoputzer/hello-ipfs/Publish?logo=github&label=Pages&style=for-the-badge) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ivoputzer/hello-ipfs/Publish?logo=ipfs&logoColor=white&label=IPFS&style=for-the-badge)
 
-- [x] Publish statice website to Github Pages (Done)
-- [x] Publish statice website to IPFS (DONE)
 
-todo
-===
-- [ ] Setup cusotm IPFS environment
-- [ ] Trigger a deployment and set ipfs url
-- [ ] Create a release with the artifact
+- [x] Publish static website to Github Pages
+- [x] Publish static website to IPFS
+- [x] Environment for IPFS
+- [x] Automatic deployment to IPFS to have CID available from UI    
