@@ -30,27 +30,21 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build@${{ github.sha }}
-    - uses: actions/setup-node@master
+    - uses: bhowell2/github-substring-action@master
+      id: repository_name
       with:
-        node-version: '14'
-        check-latest: true
+        value: ${{ github.repository }}
+        index_of_str: ${{ github.repository_owner }}/
     - name: Run Publish
-      run: |
-        npx gh-pages@${GH_PAGES_VERSION} \
-          --repo https://git:${GH_PAGES_TOKEN}@github.com/${GH_PAGES_SLUG}.git \
-          --user "${GH_PAGES_ACTOR} <${GH_PAGES_ACTOR}@users.noreply.github.com>" \
-          --message "${GH_PAGES_MESSAGE}" \
-          --branch ${GH_PAGES_BRANCH} \
-          --dist ${PWD} \
-          --silent
-      env:
-        GH_PAGES_VERSION: "3.0.0"
-        GH_PAGES_BRANCH: gh-pages
-        GH_PAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_PAGES_SLUG: ${{ github.repository }}
-        GH_PAGES_ACTOR: ${{ github.actor }}
-        GH_PAGES_MESSAGE: "Pages built for commit ${{ github.repository }}@${{ github.sha }}\n\n${{ github.event.head_commit.message }}"
-        NODE_DEBUG: gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: /home/runner/work/${{ steps.repository_name.outputs.substring }}/${{ steps.repository_name.outputs.substring }}
+        enable_jekyll: false
+        user_name: ${{ github.actor }}
+        user_email: ${{ github.actor }}@users.noreply.github.com
+        commit_message: "Pages built for commit ${{ github.repository }}@${{ github.sha }}\n\n${{ github.event.head_commit.message }}"
+        cname: ${{ github.repository_owner }}.github.io/${{ steps.repository_name.outputs.substring }}
 
   IPFS:
     runs-on: ubuntu-latest
