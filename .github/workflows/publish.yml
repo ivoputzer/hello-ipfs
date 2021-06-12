@@ -54,7 +54,9 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build@${{ github.sha }}
+
     - uses: bhowell2/github-substring-action@master
+
       id: repository_name
       with:
         value: ${{ github.repository }}
@@ -79,3 +81,13 @@ jobs:
 
     - name: "IPFS Gateway URL"
       run: echo "https://ivoputzer.xyz/ipfs/${{ steps.ipfs.outputs.hash }}"
+    
+    - uses: chrnorm/deployment-action@releases/v1
+      name: Update deployment status (active)
+      id: deployment
+      with:
+        token: "${{ github.token }}"
+        initial_status: "success"
+        description: "[${{ steps.ipfs.outputs.hash }}](ipfs://${{ steps.ipfs.outputs.hash }})"
+        target_url: "https://ivoputzer.xyz/ipfs/${{ steps.ipfs.outputs.hash }}"
+        environment: ipfs
